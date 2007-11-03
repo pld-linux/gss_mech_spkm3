@@ -1,0 +1,42 @@
+--- gss_mechs/configure.in.orig	2005-12-07 16:50:41.000000000 +0100
++++ gss_mechs/configure.in	2007-11-03 15:30:31.906100530 +0100
+@@ -36,15 +36,14 @@
+ AC_FUNC_VPRINTF
+ AC_CHECK_FUNCS(gethostname gettimeofday select socket strerror)
+ dnl XXX - Solaris sux.
+-AC_CHECK_LIB(socket, socket)
+-AC_CHECK_LIB(nsl, gethostbyname)
+-AC_CHECK_LIB(resolv, dn_expand)
++AC_SEARCH_LIBS(socket, socket)
++AC_SEARCH_LIBS(gethostbyname, nsl resolv)
+ PKG_CHECK_MODULES(RPCSECGSS, librpcsecgss, [],
+   [AC_MSG_ERROR([Unable to locate information required to use librpcsecgss.
+     If you have pkgconfig installed, you might try setting environment
+       variable PKG_CONFIG_PATH to /usr/local/lib/pkgconfig])])
+-PKG_CHECK_MODULES(GSSAPI, libgssapi, [],
+-  [AC_MSG_ERROR([Unable to locate information required to use libgssapi.
++PKG_CHECK_MODULES(GSSAPI, libgssglue, [],
++  [AC_MSG_ERROR([Unable to locate information required to use libgssglue.
+     If you have pkgconfig installed, you might try setting environment
+       variable PKG_CONFIG_PATH to /usr/local/lib/pkgconfig])])
+ 
+@@ -60,8 +59,7 @@
+   *)
+      AC_MSG_RESULT($withval)
+      if test -f $withval/include/openssl/objects.h -a \
+-	     -f $withval/lib/libcrypto.a -o \
+-	     -f $withval/libcrypto.a ; then
++	     -f $withval/lib/libcrypto.so -o -f $withval/lib64/libcrypto.so ; then
+         owd=`pwd`
+ 	if cd $withval; then withval=`pwd`; cd $owd; fi
+ 	AC_DEFINE(HAVE_OPENSSL, 1, [Define this if OpenSSL libraries are available])
+@@ -75,8 +73,7 @@
+   esac ],
+ [ for dir in /usr/local /usr ; do
+      if test -f $dir/include/openssl/objects.h -a \
+-	     -f $dir/lib/libcrypto.a -o \
+-	     -f $dir/libcrypto.a ; then
++	     -f $dir/lib/libcrypto.so -o -f $dir/lib64/libcrypto.so ; then
+         SSLDIR="$dir"
+ 	SSLLIB="-lcrypto -lssl"
+ 	break
