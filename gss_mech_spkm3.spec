@@ -53,7 +53,7 @@ Statyczna biblioteka GSS SPKM-3.
 
 %prep
 %setup -q -n gss_mechs
-%patch0 -p1
+%patch -P0 -p1
 
 %build
 %{__libtoolize}
